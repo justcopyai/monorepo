@@ -17,7 +17,7 @@ Sign up at [JustCopy.ai](https://justcopy.ai) and get:
 ## How It Works
 
 1. **Describe Your App** → Go to justcopy.ai and type what you want to build
-2. **Choose Starting Point** (Optional) → Check "Use specific template" and enter path like `monorepo/projects/fullstack-auth-starter`
+2. **Choose Starting Point** (Optional) → Check "Use specific template" and enter path like `projects/fullstack-auth-starter`
 3. **AI Customization** → Chat with AI to customize everything
 4. **Test in Dev** → Free unlimited development environment
 5. **Deploy with Tokens** → Go live when ready
@@ -25,11 +25,10 @@ Sign up at [JustCopy.ai](https://justcopy.ai) and get:
 ## Repository Structure
 
 ```
-gigajs/
+monorepo/
 ├── projects/          # Complete, production-ready applications
 │   ├── saas-starter/
-│   ├── marketplace/
-│   ├── social-network/
+│   ├── fullstack-auth-starter/
 │   └── ...
 ├── libraries/         # Reusable components & features
 │   ├── auth/
@@ -52,18 +51,15 @@ gigajs/
 1. Browse templates in this repo
 2. Go to [justcopy.ai](https://justcopy.ai)
 3. Check "Use specific template" 
-4. Enter path: `monorepo/projects/[template-name]`
+4. Enter path: `projects/[template-name]`
 5. AI customizes your chosen template
 
 ## Projects Catalog
 
-| Project | Description | Stack | Libraries Used |
-|---------|-------------|-------|----------------|
-| `saas-starter` | Complete SaaS with subscriptions | Next.js, Stripe, Prisma | auth, payments, email |
-| `marketplace` | Two-sided marketplace | Next.js, PostgreSQL | auth, payments, search |
-| `social-network` | Social platform with feeds | Next.js, Redis, Socket.io | auth, realtime, media |
-| `ecommerce` | Online store with cart | Next.js, Stripe | auth, payments, inventory |
-| `dashboard` | Analytics dashboard | Next.js, D3.js | auth, charts, export |
+| Project | Description | Stack | Path |
+|---------|-------------|-------|------|
+| `saas-starter` | Complete SaaS with subscriptions | Next.js, Stripe, Prisma | `projects/saas-starter` |
+| `fullstack-auth-starter` | Fullstack app with JWT auth | Next.js, Express, SQLite | `projects/fullstack-auth-starter` |
 
 ## Libraries Catalog
 
@@ -79,7 +75,7 @@ gigajs/
 
 ## Contribution
 
-Want to add your project to GigaJS? 
+Want to add your project to the Monorepo? 
 
 1. Ensure it's production-ready
 2. Include clear documentation

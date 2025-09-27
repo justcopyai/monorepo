@@ -22,7 +22,7 @@ Production-ready SaaS template with everything you need to launch.
 2. Describe your app: "I need a SaaS with Stripe billing"
 3. (Optional) Check "Use specific template" and enter:
    ```
-   monorepo/projects/saas-starter
+   projects/saas-starter
    ```
 4. Chat with AI to customize
 5. Test in free dev environment

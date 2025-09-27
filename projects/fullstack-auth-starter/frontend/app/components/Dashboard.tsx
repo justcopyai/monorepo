@@ -13,7 +13,7 @@ interface DashboardProps {
 export default function Dashboard({ user, setUser }: DashboardProps) {
   const [projects, setProjects] = useState([])
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [newProject, setNewProject] = useState({ name: '', description: '' })
+  const [newProject, setNewProject] = useState({ title: '', description: '' })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -23,9 +23,10 @@ export default function Dashboard({ user, setUser }: DashboardProps) {
   const fetchProjects = async () => {
     try {
       const data = await api.request('/api/projects')
-      setProjects(data.projects || [])
+      setProjects(data || [])  // API returns array directly
     } catch (error) {
       console.error('Error fetching projects:', error)
+      setProjects([])  // Set empty array on error
     }
   }
 
@@ -39,7 +40,7 @@ export default function Dashboard({ user, setUser }: DashboardProps) {
         body: JSON.stringify(newProject)
       })
       
-      setNewProject({ name: '', description: '' })
+      setNewProject({ title: '', description: '' })
       setShowCreateModal(false)
       fetchProjects()
     } catch (error) {
@@ -196,7 +197,7 @@ export default function Dashboard({ user, setUser }: DashboardProps) {
                       {new Date(project.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  <h3 className="text-white font-semibold mb-2">{project.name}</h3>
+                  <h3 className="text-white font-semibold mb-2">{project.title}</h3>
                   <p className="text-gray-300 text-sm">
                     {project.description || 'No description'}
                   </p>
@@ -222,8 +223,8 @@ export default function Dashboard({ user, setUser }: DashboardProps) {
                 type="text"
                 placeholder="My Amazing App"
                 className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-[#00ff88]/50 transition-all"
-                value={newProject.name}
-                onChange={(e) => setNewProject({...newProject, name: e.target.value})}
+                value={newProject.title}
+                onChange={(e) => setNewProject({...newProject, title: e.target.value})}
                 required
               />
               <textarea

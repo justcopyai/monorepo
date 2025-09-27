@@ -2,6 +2,14 @@
 
 Production-ready fullstack template with Next.js, Express, SQLite, and JWT authentication.
 
+## 📹 Demo Video
+
+Watch the template in action:
+
+[![Demo Video](https://cdn.loom.com/sessions/thumbnails/b5233026e2e240a5ad4e6bb622a6ab64-with-play.gif)](https://www.loom.com/share/b5233026e2e240a5ad4e6bb622a6ab64?sid=94a5294d-5165-4a19-902d-7e3560955c50)
+
+[🎥 Watch Full Demo](https://www.loom.com/share/b5233026e2e240a5ad4e6bb622a6ab64?sid=94a5294d-5165-4a19-902d-7e3560955c50)
+
 ## 🚀 Build & Deploy with JustCopy.ai
 
 **Start FREE** - Unlimited development builds. Deploy when ready with tokens!

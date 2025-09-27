@@ -25,8 +25,9 @@ export default function Home() {
       if (api.isAuthenticated()) {
         try {
           const userData = await api.auth.getCurrentUser()
-          setUser(userData.user)
+          setUser(userData)  // API returns user directly, not wrapped
         } catch (error) {
+          console.error('Auth check failed:', error)
           // Token might be expired or invalid
           api.removeToken()
         }

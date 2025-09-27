@@ -29,21 +29,21 @@ function getBackendUrl(): string {
 
 const BACKEND_URL = getBackendUrl();
 
-// Simple token storage using session storage (more secure than localStorage)
+// Token storage using localStorage for persistence across refreshes
 const tokenStorage = {
   get(): string | null {
     if (typeof window === 'undefined') return null;
-    return sessionStorage.getItem('auth_token');
+    return localStorage.getItem('auth_token');
   },
   
   set(token: string): void {
     if (typeof window === 'undefined') return;
-    sessionStorage.setItem('auth_token', token);
+    localStorage.setItem('auth_token', token);
   },
   
   remove(): void {
     if (typeof window === 'undefined') return;
-    sessionStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_token');
   }
 };
 

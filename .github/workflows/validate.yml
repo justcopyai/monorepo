@@ -1,0 +1,44 @@
+name: Validate Templates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          
+      - name: Validate metadata.json
+        run: |
+          node -e "
+          const metadata = require('./metadata.json');
+          console.log('✅ Valid metadata with', metadata.projects.length, 'projects');
+          "
+          
+      - name: Check project structure
+        run: |
+          for dir in projects/*/; do
+            if [ -f "$dir/README.md" ]; then
+              echo "✅ $dir has README.md"
+            else
+              echo "❌ $dir missing README.md"
+              exit 1
+            fi
+          done
+          
+      - name: Check for secrets
+        run: |
+          # Scan for potential secrets
+          ! grep -r "sk_live" --include="*.js" --include="*.ts" --include="*.env" . || exit 1
+          ! grep -r "PRIVATE_KEY" --include="*.js" --include="*.ts" --include="*.env" . || exit 1
+          echo "✅ No secrets found"

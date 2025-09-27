@@ -1,0 +1,157 @@
+{
+  "version": "1.0.0",
+  "description": "Monorepo - Universal codebase for JustCopy.ai",
+  "projects": [
+    {
+      "id": "saas-starter",
+      "name": "SaaS Starter Kit",
+      "description": "Complete SaaS with subscriptions, team management, and admin dashboard",
+      "tags": ["saas", "subscription", "teams", "billing", "dashboard"],
+      "stack": ["nextjs", "typescript", "tailwind", "prisma", "stripe"],
+      "libraries": ["auth", "payments", "email", "database"],
+      "popularity": 95,
+      "keywords": ["stripe billing", "subscription platform", "team saas", "multi-tenant"],
+      "similar": ["lemonsqueezy", "stripe", "paddle", "chargebee"]
+    },
+    {
+      "id": "marketplace",
+      "name": "Marketplace Platform",
+      "description": "Two-sided marketplace with payments, reviews, and seller dashboard",
+      "tags": ["marketplace", "ecommerce", "payments", "reviews"],
+      "stack": ["nextjs", "typescript", "postgresql", "stripe-connect"],
+      "libraries": ["auth", "payments", "search", "media", "email"],
+      "popularity": 90,
+      "keywords": ["ebay", "etsy", "amazon", "airbnb", "uber"],
+      "similar": ["airbnb clone", "uber for x", "etsy marketplace"]
+    },
+    {
+      "id": "social-network",
+      "name": "Social Network",
+      "description": "Social platform with posts, comments, likes, and real-time chat",
+      "tags": ["social", "feed", "chat", "realtime"],
+      "stack": ["nextjs", "redis", "socket.io", "postgresql"],
+      "libraries": ["auth", "realtime", "media", "notifications"],
+      "popularity": 85,
+      "keywords": ["twitter", "facebook", "instagram", "linkedin", "reddit"],
+      "similar": ["twitter clone", "social media", "community platform"]
+    },
+    {
+      "id": "ai-chatbot",
+      "name": "AI Chat Application",
+      "description": "ChatGPT-style interface with streaming, history, and RAG",
+      "tags": ["ai", "chatbot", "gpt", "rag", "streaming"],
+      "stack": ["nextjs", "openai", "pinecone", "vercel-ai"],
+      "libraries": ["auth", "ai", "database", "streaming"],
+      "popularity": 98,
+      "keywords": ["chatgpt", "claude", "ai assistant", "rag", "langchain"],
+      "similar": ["chatgpt clone", "ai wrapper", "llm app"]
+    },
+    {
+      "id": "ecommerce",
+      "name": "E-commerce Store",
+      "description": "Online store with cart, checkout, inventory, and admin",
+      "tags": ["ecommerce", "store", "shopping", "cart"],
+      "stack": ["nextjs", "stripe", "prisma", "tailwind"],
+      "libraries": ["auth", "payments", "inventory", "email", "media"],
+      "popularity": 92,
+      "keywords": ["shopify", "woocommerce", "shop", "store", "retail"],
+      "similar": ["shopify clone", "online store", "digital products"]
+    },
+    {
+      "id": "dashboard-analytics",
+      "name": "Analytics Dashboard",
+      "description": "Data visualization dashboard with charts, exports, and reports",
+      "tags": ["dashboard", "analytics", "charts", "data"],
+      "stack": ["nextjs", "d3js", "recharts", "postgresql"],
+      "libraries": ["auth", "charts", "export", "database"],
+      "popularity": 80,
+      "keywords": ["analytics", "metrics", "kpi", "dashboard", "reporting"],
+      "similar": ["mixpanel", "google analytics", "datadog"]
+    },
+    {
+      "id": "video-streaming",
+      "name": "Video Platform",
+      "description": "Video streaming platform with uploads, transcoding, and playlists",
+      "tags": ["video", "streaming", "media", "content"],
+      "stack": ["nextjs", "mux", "cloudinary", "postgresql"],
+      "libraries": ["auth", "media", "storage", "payments"],
+      "popularity": 75,
+      "keywords": ["youtube", "netflix", "twitch", "vimeo", "streaming"],
+      "similar": ["youtube clone", "netflix clone", "course platform"]
+    },
+    {
+      "id": "booking-platform",
+      "name": "Booking System",
+      "description": "Appointment booking with calendar, availability, and payments",
+      "tags": ["booking", "calendar", "appointments", "scheduling"],
+      "stack": ["nextjs", "cal.com", "stripe", "postgresql"],
+      "libraries": ["auth", "calendar", "payments", "email", "notifications"],
+      "popularity": 82,
+      "keywords": ["calendly", "booking", "appointments", "scheduling", "reservation"],
+      "similar": ["calendly clone", "appointment system", "hotel booking"]
+    }
+  ],
+  "libraries": [
+    {
+      "id": "auth",
+      "name": "Authentication",
+      "description": "Complete auth with social logins, MFA, and teams",
+      "components": ["login", "register", "forgot-password", "oauth", "mfa"],
+      "providers": ["nextauth", "clerk", "supabase", "auth0"]
+    },
+    {
+      "id": "payments",
+      "name": "Payment Processing",
+      "description": "Payments, subscriptions, and billing",
+      "components": ["checkout", "billing", "invoices", "webhooks"],
+      "providers": ["stripe", "paypal", "lemonsqueezy", "paddle"]
+    },
+    {
+      "id": "email",
+      "name": "Email Service",
+      "description": "Transactional and marketing emails",
+      "components": ["templates", "sending", "tracking", "unsubscribe"],
+      "providers": ["resend", "sendgrid", "postmark", "aws-ses"]
+    },
+    {
+      "id": "database",
+      "name": "Database Layer",
+      "description": "Database connections and ORM",
+      "components": ["schema", "migrations", "seeds", "queries"],
+      "providers": ["prisma", "drizzle", "mongoose", "typeorm"]
+    },
+    {
+      "id": "realtime",
+      "name": "Real-time Features",
+      "description": "WebSockets, live updates, and chat",
+      "components": ["websocket", "presence", "chat", "notifications"],
+      "providers": ["socket.io", "pusher", "ably", "supabase"]
+    },
+    {
+      "id": "ai",
+      "name": "AI Integration",
+      "description": "LLM integration and AI features",
+      "components": ["chat", "completion", "embeddings", "rag"],
+      "providers": ["openai", "anthropic", "replicate", "huggingface"]
+    },
+    {
+      "id": "storage",
+      "name": "File Storage",
+      "description": "File uploads and media handling",
+      "components": ["upload", "images", "documents", "cdn"],
+      "providers": ["s3", "cloudinary", "uploadthing", "vercel-blob"]
+    },
+    {
+      "id": "search",
+      "name": "Search Engine",
+      "description": "Full-text search and filtering",
+      "components": ["indexing", "facets", "autocomplete", "filters"],
+      "providers": ["algolia", "elasticsearch", "typesense", "meilisearch"]
+    }
+  ],
+  "matching": {
+    "algorithm": "semantic-similarity",
+    "fallback": "keyword-match",
+    "confidence_threshold": 0.7
+  }
+}

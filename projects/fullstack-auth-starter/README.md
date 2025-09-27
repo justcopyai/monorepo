@@ -6,19 +6,17 @@ Production-ready fullstack template with Next.js, Express, SQLite, and JWT authe
 
 **Start FREE** - Unlimited development builds. Deploy when ready with tokens!
 
-Two ways to use this template:
+### How to use this template:
 
-**1. Describe what you want:**
-```
-Go to justcopy.ai and type:
-"I need a fullstack app with authentication"
-```
-
-**2. Copy this specific template:**
-```
-Go to justcopy.ai and enter:
-monorepo/projects/fullstack-auth-starter
-```
+1. Go to [justcopy.ai](https://justcopy.ai)
+2. Describe your app: "I need a fullstack app with authentication"
+3. (Optional) Check "Use specific template" and enter:
+   ```
+   monorepo/projects/fullstack-auth-starter
+   ```
+4. Chat with AI to customize
+5. Test in free dev environment
+6. Deploy with tokens when ready
 
 ### What You Get FREE:
 - ✅ Full dev environment

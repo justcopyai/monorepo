@@ -26,22 +26,24 @@ Drop-in authentication for any project.
 
 ## How JustCopy.ai Uses This
 
-When you request "add authentication" or build an app that needs auth, JustCopy.ai will:
-1. Copy the appropriate auth implementation
-2. Wire it into your project
-3. Set up the database schema
-4. Configure environment variables
-5. Add login/register pages
+When building your app, the AI will automatically:
+1. Detect if authentication is needed
+2. Copy the appropriate auth implementation
+3. Wire it into your project
+4. Set up the database schema
+5. Configure environment variables
+6. Add login/register pages
 
 ## Quick Integration
 
-Just tell JustCopy.ai what you need:
+At [justcopy.ai](https://justcopy.ai), just describe what you need:
+- "I need user authentication"
 - "Add Google login"
 - "I need team-based authentication"  
 - "Add magic link login"
 - "Set up admin roles"
 
-The AI handles all the integration automatically!
+Or check "Use specific template" and choose a template that already includes auth!
 
 ## 💡 Pro Tips
 

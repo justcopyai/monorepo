@@ -16,11 +16,11 @@ Sign up at [JustCopy.ai](https://justcopy.ai) and get:
 
 ## How It Works
 
-1. **User Request** → "I want to build a SaaS like Stripe billing"
-2. **JustCopy.ai** → Finds closest matching project in monorepo
-3. **Smart Composition** → Copies base project + adds needed libraries
-4. **AI Customization** → Tailors code to specific requirements
-5. **Instant Deploy** → Live app in seconds
+1. **Describe Your App** → Go to justcopy.ai and type what you want to build
+2. **Choose Starting Point** (Optional) → Check "Use specific template" and enter path like `monorepo/projects/fullstack-auth-starter`
+3. **AI Customization** → Chat with AI to customize everything
+4. **Test in Dev** → Free unlimited development environment
+5. **Deploy with Tokens** → Go live when ready
 
 ## Repository Structure
 
@@ -41,11 +41,19 @@ gigajs/
 
 ## For JustCopy.ai Users
 
-Simply describe what you want to build at [justcopy.ai](https://justcopy.ai) and our AI will:
-- Find the most similar project from GigaJS
-- Intelligently combine needed libraries
-- Customize everything to your requirements
-- Deploy instantly to your cloud
+### Default Flow:
+1. Go to [justcopy.ai](https://justcopy.ai)
+2. Describe what you want to build
+3. AI finds the best template and customizes it
+4. Test in free dev environment
+5. Deploy when ready
+
+### Advanced Flow (Choose Your Template):
+1. Browse templates in this repo
+2. Go to [justcopy.ai](https://justcopy.ai)
+3. Check "Use specific template" 
+4. Enter path: `monorepo/projects/[template-name]`
+5. AI customizes your chosen template
 
 ## Projects Catalog
 

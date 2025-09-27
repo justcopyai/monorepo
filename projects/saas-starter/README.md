@@ -16,19 +16,17 @@ Production-ready SaaS template with everything you need to launch.
 
 **Start FREE** - Unlimited development builds. Deploy when ready with tokens!
 
-Two ways to use this template:
+### How to use this template:
 
-**1. Describe what you want:**
-```
-Go to justcopy.ai and type:
-"I need a SaaS with Stripe billing"
-```
-
-**2. Copy this specific template:**
-```
-Go to justcopy.ai and enter:
-monorepo/projects/saas-starter
-```
+1. Go to [justcopy.ai](https://justcopy.ai)
+2. Describe your app: "I need a SaaS with Stripe billing"
+3. (Optional) Check "Use specific template" and enter:
+   ```
+   monorepo/projects/saas-starter
+   ```
+4. Chat with AI to customize
+5. Test in free dev environment
+6. Deploy with tokens when ready
 
 ### What You Get FREE:
 - ✅ Full dev environment

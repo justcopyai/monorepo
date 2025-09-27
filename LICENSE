@@ -1,21 +1,68 @@
-MIT License
+JustCopy Source License (JSL) v1.0
 
-Copyright (c) 2025 JustCopy Inc.
+Copyright (c) 2025 JustCopy Inc. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This license governs use of the accompanying software ("Software"). If you use the Software, you accept this license. If you do not accept the license, do not use the Software.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. DEFINITIONS
+   - "Commercial Use" means using the Software in any manner that directly or indirectly results in revenue, including but not limited to:
+     • Deploying applications that generate revenue
+     • Offering the Software as a service
+     • Using in production for business operations
+   - "JustCopy Platform" means the official platform at https://justcopy.ai
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. GRANTS AND RESTRICTIONS
+
+   A. Via JustCopy Platform (Unlimited Commercial Use):
+      When you use the Software through the JustCopy Platform:
+      ✓ You receive UNLIMITED commercial use rights
+      ✓ You may modify, deploy, and monetize without restriction
+      ✓ No additional licensing fees required
+      ✓ Full production use permitted
+
+   B. Direct Use (Without JustCopy Platform):
+      You may use the Software directly for:
+      ✓ Personal projects and learning
+      ✓ Educational and academic purposes
+      ✓ Evaluation and testing (up to 30 days)
+      ✓ Non-commercial open source projects
+      ✓ Contributing improvements back to this repository
+
+      You may NOT use the Software directly for:
+      ✗ Commercial or production use
+      ✗ Offering as a competitive service to JustCopy
+      ✗ Reselling or sublicensing
+      ✗ Removing or altering license notices
+
+3. COMMERCIAL LICENSE
+   For commercial use WITHOUT the JustCopy Platform:
+   - Contact: license@justcopy.ai
+   - Custom terms available for enterprises
+   - White-label options available
+
+4. CONTRIBUTIONS
+   By contributing to this repository, you:
+   - Grant JustCopy Inc. perpetual rights to your contributions
+   - Agree your contributions may be used under this license
+   - Retain copyright to your original work
+
+5. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+6. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL JUSTCOPY INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM USE OF THE SOFTWARE.
+
+7. TERMINATION
+   This license automatically terminates if you violate any of its terms.
+
+8. GOVERNING LAW
+   This license is governed by the laws of Delaware, USA.
+
+---
+
+For questions about this license:
+- Commercial licensing: license@justcopy.ai
+- Platform usage: support@justcopy.ai
+- Website: https://justcopy.ai
+
+This license applies to all code in this repository unless otherwise specified.

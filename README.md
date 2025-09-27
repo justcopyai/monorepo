@@ -2,6 +2,16 @@
 
 The intelligent codebase that powers [JustCopy.ai](https://justcopy.ai)'s instant app generation.
 
+## 📜 License - JustCopy Source License (JSL)
+
+**🎯 Important**: This repository uses the JustCopy Source License:
+- ✅ **UNLIMITED commercial use** when deployed through [JustCopy.ai](https://justcopy.ai) platform
+- ⚠️ **Commercial license required** for direct commercial use without JustCopy.ai
+- ✅ **Always FREE** for learning, testing (30 days), and personal projects
+- ✅ **Contributions welcome** - help us build the best codebase!
+
+See [LICENSE](./LICENSE) for full terms or [LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md) for FAQ.
+
 ## 🎁 Start Building FREE
 
 Sign up at [JustCopy.ai](https://justcopy.ai) and get:

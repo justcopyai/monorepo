@@ -3,103 +3,27 @@
   "description": "Monorepo - Universal codebase for JustCopy.ai",
   "projects": [
     {
-      "id": "saas-starter",
-      "name": "SaaS Starter Kit",
-      "description": "Complete SaaS with subscriptions, team management, and admin dashboard",
-      "tags": ["saas", "subscription", "teams", "billing", "dashboard"],
-      "stack": ["nextjs", "typescript", "tailwind", "prisma", "stripe"],
-      "libraries": ["auth", "payments", "email", "database"],
-      "popularity": 95,
-      "keywords": ["stripe billing", "subscription platform", "team saas", "multi-tenant"],
-      "similar": ["lemonsqueezy", "stripe", "paddle", "chargebee"]
-    },
-    {
-      "id": "marketplace",
-      "name": "Marketplace Platform",
-      "description": "Two-sided marketplace with payments, reviews, and seller dashboard",
-      "tags": ["marketplace", "ecommerce", "payments", "reviews"],
-      "stack": ["nextjs", "typescript", "postgresql", "stripe-connect"],
-      "libraries": ["auth", "payments", "search", "media", "email"],
-      "popularity": 90,
-      "keywords": ["ebay", "etsy", "amazon", "airbnb", "uber"],
-      "similar": ["airbnb clone", "uber for x", "etsy marketplace"]
-    },
-    {
-      "id": "social-network",
-      "name": "Social Network",
-      "description": "Social platform with posts, comments, likes, and real-time chat",
-      "tags": ["social", "feed", "chat", "realtime"],
-      "stack": ["nextjs", "redis", "socket.io", "postgresql"],
-      "libraries": ["auth", "realtime", "media", "notifications"],
-      "popularity": 85,
-      "keywords": ["twitter", "facebook", "instagram", "linkedin", "reddit"],
-      "similar": ["twitter clone", "social media", "community platform"]
-    },
-    {
-      "id": "ai-chatbot",
-      "name": "AI Chat Application",
-      "description": "ChatGPT-style interface with streaming, history, and RAG",
-      "tags": ["ai", "chatbot", "gpt", "rag", "streaming"],
-      "stack": ["nextjs", "openai", "pinecone", "vercel-ai"],
-      "libraries": ["auth", "ai", "database", "streaming"],
-      "popularity": 98,
-      "keywords": ["chatgpt", "claude", "ai assistant", "rag", "langchain"],
-      "similar": ["chatgpt clone", "ai wrapper", "llm app"]
-    },
-    {
       "id": "fullstack-auth-starter",
+      "path": "projects/fullstack-auth-starter",
       "name": "Fullstack Auth Starter",
       "description": "Complete fullstack app with Next.js, Express, SQLite, and JWT authentication",
-      "tags": ["fullstack", "authentication", "jwt", "sqlite", "docker"],
+      "tags": ["fullstack", "authentication", "jwt", "sqlite", "nextjs", "express"],
       "stack": ["nextjs", "express", "sqlite", "typescript", "tailwind"],
       "libraries": ["auth", "database"],
-      "popularity": 88,
-      "keywords": ["fullstack", "authentication", "jwt", "login", "register", "sqlite"],
-      "similar": ["auth starter", "fullstack boilerplate", "nextjs express"]
-    },
-    {
-      "id": "ecommerce",
-      "name": "E-commerce Store",
-      "description": "Online store with cart, checkout, inventory, and admin",
-      "tags": ["ecommerce", "store", "shopping", "cart"],
-      "stack": ["nextjs", "stripe", "prisma", "tailwind"],
-      "libraries": ["auth", "payments", "inventory", "email", "media"],
-      "popularity": 92,
-      "keywords": ["shopify", "woocommerce", "shop", "store", "retail"],
-      "similar": ["shopify clone", "online store", "digital products"]
-    },
-    {
-      "id": "dashboard-analytics",
-      "name": "Analytics Dashboard",
-      "description": "Data visualization dashboard with charts, exports, and reports",
-      "tags": ["dashboard", "analytics", "charts", "data"],
-      "stack": ["nextjs", "d3js", "recharts", "postgresql"],
-      "libraries": ["auth", "charts", "export", "database"],
-      "popularity": 80,
-      "keywords": ["analytics", "metrics", "kpi", "dashboard", "reporting"],
-      "similar": ["mixpanel", "google analytics", "datadog"]
-    },
-    {
-      "id": "video-streaming",
-      "name": "Video Platform",
-      "description": "Video streaming platform with uploads, transcoding, and playlists",
-      "tags": ["video", "streaming", "media", "content"],
-      "stack": ["nextjs", "mux", "cloudinary", "postgresql"],
-      "libraries": ["auth", "media", "storage", "payments"],
-      "popularity": 75,
-      "keywords": ["youtube", "netflix", "twitch", "vimeo", "streaming"],
-      "similar": ["youtube clone", "netflix clone", "course platform"]
-    },
-    {
-      "id": "booking-platform",
-      "name": "Booking System",
-      "description": "Appointment booking with calendar, availability, and payments",
-      "tags": ["booking", "calendar", "appointments", "scheduling"],
-      "stack": ["nextjs", "cal.com", "stripe", "postgresql"],
-      "libraries": ["auth", "calendar", "payments", "email", "notifications"],
-      "popularity": 82,
-      "keywords": ["calendly", "booking", "appointments", "scheduling", "reservation"],
-      "similar": ["calendly clone", "appointment system", "hotel booking"]
+      "popularity": 95,
+      "keywords": ["fullstack", "authentication", "jwt", "login", "register", "sqlite", "nextjs", "express", "tailwind"],
+      "similar": ["auth starter", "fullstack boilerplate", "nextjs express", "mern stack", "full stack"],
+      "demo": "https://www.loom.com/share/b5233026e2e240a5ad4e6bb622a6ab64",
+      "features": [
+        "JWT Authentication with database sessions",
+        "User registration and login",
+        "Protected routes and API endpoints",
+        "SQLite database with migrations",
+        "Beautiful UI with Tailwind CSS",
+        "Framer Motion animations",
+        "Project management dashboard",
+        "Responsive design"
+      ]
     }
   ],
   "libraries": [

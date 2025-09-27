@@ -47,6 +47,17 @@
       "similar": ["chatgpt clone", "ai wrapper", "llm app"]
     },
     {
+      "id": "fullstack-auth-starter",
+      "name": "Fullstack Auth Starter",
+      "description": "Complete fullstack app with Next.js, Express, SQLite, and JWT authentication",
+      "tags": ["fullstack", "authentication", "jwt", "sqlite", "docker"],
+      "stack": ["nextjs", "express", "sqlite", "typescript", "tailwind"],
+      "libraries": ["auth", "database"],
+      "popularity": 88,
+      "keywords": ["fullstack", "authentication", "jwt", "login", "register", "sqlite"],
+      "similar": ["auth starter", "fullstack boilerplate", "nextjs express"]
+    },
+    {
       "id": "ecommerce",
       "name": "E-commerce Store",
       "description": "Online store with cart, checkout, inventory, and admin",

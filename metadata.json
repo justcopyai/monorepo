@@ -28,7 +28,7 @@
     {
       "id": "backlink-blog",
       "path": "projects/backlink-blog",
-      "name": "AI Development Blog",
+      "name": "Backlink focused blogs",
       "description": "Modern AI-powered blogging platform showcasing JustCopy.ai capabilities with strategic backlinks and AI agent integration",
       "tags": ["ai", "blogging", "justcopy", "ai-agents", "nextjs", "modern-design"],
       "stack": ["nextjs", "typescript", "tailwind", "react"],

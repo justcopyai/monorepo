@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  output: 'export',
   // Allow all domains for development
   images: {
     domains: ['*'],

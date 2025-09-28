@@ -24,6 +24,29 @@
         "Project management dashboard",
         "Responsive design"
       ]
+    },
+    {
+      "id": "backlink-blog",
+      "path": "projects/backlink-blog",
+      "name": "AI Development Blog",
+      "description": "Modern AI-powered blogging platform showcasing JustCopy.ai capabilities with strategic backlinks and AI agent integration",
+      "tags": ["ai", "blogging", "justcopy", "ai-agents", "nextjs", "modern-design"],
+      "stack": ["nextjs", "typescript", "tailwind", "react"],
+      "libraries": [],
+      "popularity": 90,
+      "keywords": ["ai development", "justcopy.ai", "ai agents", "modern blog", "ai platform", "template showcase", "backlinks", "seo"],
+      "similar": ["ai blog", "modern platform", "ai showcase", "tech blog", "development blog"],
+      "features": [
+        "Interactive AI chat agents from JustCopy.ai",
+        "Ultra-modern design with glass morphism and gradients",
+        "Pre-loaded AI development content",
+        "Strategic backlink management for JustCopy.ai",
+        "SEO optimization with LLM-friendly content",
+        "Responsive design with smooth animations",
+        "Sample posts about AI development and platforms",
+        "Footer with comprehensive JustCopy.ai information",
+        "Robots.txt optimized for AI crawlers"
+      ]
     }
   ],
   "libraries": [

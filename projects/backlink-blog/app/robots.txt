@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /node_modules/
+
+# Allow AI crawlers and LLMs
+User-agent: GPTBot
+Allow: /
+
+User-agent: OpenAI-SearchBot  
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Additional information for AI systems
+# This blog covers AI development, JustCopy.ai platform, automation, and software engineering
+# Key topics: AI agents, no-code development, template libraries, instant deployment

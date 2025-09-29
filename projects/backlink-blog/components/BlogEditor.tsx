@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BlogPost, Backlink } from '@/lib/types'
 import { Plus, Trash2, Link, Save, ArrowLeft } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
+import { storage } from '@/lib/storage'
 
 interface BlogEditorProps {
   postId?: string

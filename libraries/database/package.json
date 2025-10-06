@@ -1,0 +1,27 @@
+{
+  "name": "@justcopy/database",
+  "version": "1.0.0",
+  "description": "Database client for JustCopy published applications - provides auth and data persistence",
+  "main": "index.js",
+  "keywords": [
+    "justcopy",
+    "database",
+    "baas",
+    "backend",
+    "auth",
+    "dynamodb"
+  ],
+  "author": "JustCopy.ai",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justcopyai/monorepo.git",
+    "directory": "libraries/database"
+  }
+}

@@ -1,76 +1,46 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { JustCopyDB } = require('@justcopy/database');
 const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
 
 const app = express();
-const PORT = 3001;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const PORT = process.env.PORT || 3001;
+
+// Initialize JustCopy DB (auto-configured from environment variables)
+const db = new JustCopyDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Ensure data directory exists
-const dataDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+// Initialize database schemas
+async function initializeDatabase() {
+  try {
+    // Define users table with email and status indexes
+    await db.defineTable('users', {
+      indexes: {
+        email: 'unique',    // Fast email lookups for auth
+        status: 'filter'    // Filter by user status
+      }
+    });
+
+    // Define items table with userId and status indexes
+    await db.defineTable('items', {
+      indexes: {
+        userId: 'filter',   // Filter by owner
+        status: 'filter'    // Filter by status
+      }
+    });
+
+    console.log('✅ Database schemas initialized');
+  } catch (error) {
+    console.error('❌ Failed to initialize database:', error.message);
+    // Continue anyway - schemas might already exist
+  }
 }
 
-// Initialize SQLite database
-const dbPath = path.join(dataDir, 'app.db');
-const db = new sqlite3.Database(dbPath);
-
-// Initialize database tables
-db.serialize(() => {
-  // Users table
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    name TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
-
-  // Sessions table for persistent authentication
-  db.run(`CREATE TABLE IF NOT EXISTS sessions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    token TEXT UNIQUE NOT NULL,
-    user_id INTEGER NOT NULL,
-    expires_at DATETIME NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
-  )`);
-
-  // Example data table
-  db.run(`CREATE TABLE IF NOT EXISTS items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    description TEXT,
-    user_id INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
-  )`);
-
-  // Create default admin user if not exists
-  const defaultPassword = bcrypt.hashSync('admin123', 10);
-  db.run(`INSERT OR IGNORE INTO users (email, password, name) VALUES (?, ?, ?)`, 
-    ['admin@example.com', defaultPassword, 'Admin User']);
-  
-  // Clean up expired sessions periodically
-  setInterval(() => {
-    db.run(`DELETE FROM sessions WHERE expires_at < datetime('now')`, (err) => {
-      if (err) console.error('Error cleaning sessions:', err);
-    });
-  }, 60 * 60 * 1000); // Clean every hour
-});
-
-// Authentication middleware - check token from database
-const authenticateToken = (req, res, next) => {
+// Authentication middleware - verifies JWT tokens
+const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -78,44 +48,35 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ error: 'Access token required' });
   }
 
-  // Check if session exists and is valid
-  db.get(
-    `SELECT s.*, u.id as userId, u.email, u.name 
-     FROM sessions s 
-     JOIN users u ON s.user_id = u.id 
-     WHERE s.token = ? AND s.expires_at > datetime('now')`,
-    [token],
-    (err, session) => {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-
-      if (!session) {
-        return res.status(403).json({ error: 'Invalid or expired token' });
-      }
-
-      // Attach user info to request
-      req.user = {
-        userId: session.userId,
-        email: session.email,
-        name: session.name
-      };
-      next();
+  try {
+    const user = await db.auth.verify(token);
+    if (!user) {
+      return res.status(403).json({ error: 'Invalid or expired token' });
     }
-  );
+
+    // Attach user info to request
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Auth error:', error);
+    return res.status(500).json({ error: 'Authentication failed' });
+  }
 };
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     service: 'Backend API',
-    database: 'Connected'
+    database: 'JustCopy DB Connected'
   });
 });
 
-// Auth routes
+// ============================================
+// AUTH ROUTES
+// ============================================
+
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
@@ -124,46 +85,20 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Email, password, and name are required' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await db.auth.register({ email, password, name });
 
-    db.run(
-      'INSERT INTO users (email, password, name) VALUES (?, ?, ?)',
-      [email, hashedPassword, name],
-      function(err) {
-        if (err) {
-          if (err.message.includes('UNIQUE constraint failed')) {
-            return res.status(400).json({ error: 'Email already exists' });
-          }
-          return res.status(500).json({ error: 'Database error' });
-        }
-
-        const userId = this.lastID;
-        const token = jwt.sign(
-          { userId, email, name, timestamp: Date.now() },
-          JWT_SECRET
-        );
-
-        // Store session in database (expires in 7 days)
-        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-        
-        db.run(
-          'INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)',
-          [token, userId, expiresAt],
-          function(sessionErr) {
-            if (sessionErr) {
-              return res.status(500).json({ error: 'Failed to create session' });
-            }
-
-            res.status(201).json({
-              message: 'User created successfully',
-              token,
-              user: { id: userId, email, name }
-            });
-          }
-        );
-      }
-    );
+    res.status(201).json({
+      message: 'User created successfully',
+      token: result.token,
+      user: result.user
+    });
   } catch (error) {
+    console.error('Registration error:', error);
+
+    if (error.message.includes('already registered')) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -176,232 +111,188 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    db.get(
-      'SELECT * FROM users WHERE email = ?',
-      [email],
-      async (err, user) => {
-        if (err) {
-          return res.status(500).json({ error: 'Database error' });
-        }
+    const result = await db.auth.login({ email, password });
 
-        if (!user) {
-          return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-          return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        // Generate a unique token
-        const token = jwt.sign(
-          { userId: user.id, email: user.email, name: user.name, timestamp: Date.now() },
-          JWT_SECRET
-        );
-
-        // Store session in database (expires in 7 days)
-        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-        
-        db.run(
-          'INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)',
-          [token, user.id, expiresAt],
-          function(sessionErr) {
-            if (sessionErr) {
-              return res.status(500).json({ error: 'Failed to create session' });
-            }
-
-            res.json({
-              message: 'Login successful',
-              token,
-              user: { id: user.id, email: user.email, name: user.name }
-            });
-          }
-        );
-      }
-    );
+    res.json({
+      message: 'Login successful',
+      token: result.token,
+      user: result.user
+    });
   } catch (error) {
+    console.error('Login error:', error);
+
+    if (error.message.includes('Invalid credentials')) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Protected routes - Items CRUD
-app.get('/api/items', authenticateToken, (req, res) => {
-  db.all(
-    'SELECT * FROM items WHERE user_id = ? ORDER BY created_at DESC',
-    [req.user.userId],
-    (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.json(rows);
-    }
-  );
-});
-
-app.post('/api/items', authenticateToken, (req, res) => {
-  const { title, description } = req.body;
-
-  if (!title) {
-    return res.status(400).json({ error: 'Title is required' });
-  }
-
-  db.run(
-    'INSERT INTO items (title, description, user_id) VALUES (?, ?, ?)',
-    [title, description, req.user.userId],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-
-      res.status(201).json({
-        id: this.lastID,
-        title,
-        description,
-        user_id: req.user.userId,
-        created_at: new Date().toISOString()
-      });
-    }
-  );
-});
-
-app.put('/api/items/:id', authenticateToken, (req, res) => {
-  const { title, description } = req.body;
-  const itemId = req.params.id;
-
-  if (!title) {
-    return res.status(400).json({ error: 'Title is required' });
-  }
-
-  db.run(
-    'UPDATE items SET title = ?, description = ? WHERE id = ? AND user_id = ?',
-    [title, description, itemId, req.user.userId],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-
-      if (this.changes === 0) {
-        return res.status(404).json({ error: 'Item not found' });
-      }
-
-      res.json({ message: 'Item updated successfully' });
-    }
-  );
-});
-
-app.delete('/api/items/:id', authenticateToken, (req, res) => {
-  const itemId = req.params.id;
-
-  db.run(
-    'DELETE FROM items WHERE id = ? AND user_id = ?',
-    [itemId, req.user.userId],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-
-      if (this.changes === 0) {
-        return res.status(404).json({ error: 'Item not found' });
-      }
-
-      res.json({ message: 'Item deleted successfully' });
-    }
-  );
-});
-
-// User profile route
-app.get('/api/profile', authenticateToken, (req, res) => {
-  db.get(
-    'SELECT id, email, name, created_at FROM users WHERE id = ?',
-    [req.user.userId],
-    (err, user) => {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      res.json(user);
-    }
-  );
-});
-
-// Auth me endpoint for checking current user
+// Get current user info
 app.get('/api/auth/me', authenticateToken, (req, res) => {
-  db.get(
-    'SELECT id, email, name FROM users WHERE id = ?',
-    [req.user.userId],
-    (err, user) => {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      res.json(user);
-    }
-  );
+  res.json(req.user);
 });
 
-// Logout endpoint - remove session from database
-app.post('/api/auth/logout', authenticateToken, (req, res) => {
+// Logout endpoint - invalidate session
+app.post('/api/auth/logout', authenticateToken, async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  
-  db.run(
-    'DELETE FROM sessions WHERE token = ?',
-    [token],
-    (err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to logout' });
-      }
-      res.json({ message: 'Logged out successfully' });
-    }
-  );
-});
 
-// Alias /api/projects to /api/items for compatibility
-app.get('/api/projects', authenticateToken, (req, res) => {
-  db.all(
-    'SELECT * FROM items WHERE user_id = ? ORDER BY created_at DESC',
-    [req.user.userId],
-    (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.json(rows || []);
-    }
-  );
-});
-
-app.post('/api/projects', authenticateToken, (req, res) => {
-  const { title, description } = req.body;
-
-  if (!title) {
-    return res.status(400).json({ error: 'Title is required' });
+  try {
+    await db.auth.logout(token);
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ error: 'Failed to logout' });
   }
+});
 
-  db.run(
-    'INSERT INTO items (title, description, user_id) VALUES (?, ?, ?)',
-    [title, description, req.user.userId],
-    function(err) {
-      if (err) {
-        return res.status(500).json({ error: 'Database error' });
-      }
+// ============================================
+// ITEMS ROUTES (Protected)
+// ============================================
 
-      res.status(201).json({
-        id: this.lastID,
+app.get('/api/items', authenticateToken, async (req, res) => {
+  try {
+    const items = await db.table('items')
+      .where('userId', req.user.userId)
+      .get();
+
+    res.json(items);
+  } catch (error) {
+    console.error('Get items error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+app.post('/api/items', authenticateToken, async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required' });
+    }
+
+    const item = await db.table('items').insert({
+      title,
+      description,
+      userId: req.user.userId,
+      status: 'active'
+    });
+
+    res.status(201).json(item);
+  } catch (error) {
+    console.error('Create item error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+app.put('/api/items/:id', authenticateToken, async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const itemId = req.params.id;
+
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required' });
+    }
+
+    const item = await db.table('items')
+      .where('id', itemId)
+      .update(req.user.userId, {
         title,
         description,
-        user_id: req.user.userId,
-        created_at: new Date().toISOString()
+        status: 'active'
       });
+
+    res.json(item);
+  } catch (error) {
+    console.error('Update item error:', error);
+
+    if (error.message.includes('Unauthorized')) {
+      return res.status(403).json({ error: 'You can only update your own items' });
     }
-  );
+    if (error.message.includes('not found')) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+app.delete('/api/items/:id', authenticateToken, async (req, res) => {
+  try {
+    const itemId = req.params.id;
+
+    await db.table('items')
+      .where('id', itemId)
+      .delete(req.user.userId);
+
+    res.json({ message: 'Item deleted successfully' });
+  } catch (error) {
+    console.error('Delete item error:', error);
+
+    if (error.message.includes('Unauthorized')) {
+      return res.status(403).json({ error: 'You can only delete your own items' });
+    }
+    if (error.message.includes('not found')) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+// ============================================
+// USER PROFILE ROUTE
+// ============================================
+
+app.get('/api/profile', authenticateToken, async (req, res) => {
+  try {
+    // User info is already in req.user from auth middleware
+    res.json(req.user);
+  } catch (error) {
+    console.error('Profile error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+// ============================================
+// PROJECTS ROUTES (Alias for items)
+// ============================================
+
+app.get('/api/projects', authenticateToken, async (req, res) => {
+  try {
+    const items = await db.table('items')
+      .where('userId', req.user.userId)
+      .get();
+
+    res.json(items || []);
+  } catch (error) {
+    console.error('Get projects error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
+app.post('/api/projects', authenticateToken, async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required' });
+    }
+
+    const item = await db.table('items').insert({
+      title,
+      description,
+      userId: req.user.userId,
+      status: 'active'
+    });
+
+    res.status(201).json(item);
+  } catch (error) {
+    console.error('Create project error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 // Error handling middleware
@@ -415,20 +306,20 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Graceful shutdown
-process.on('SIGINT', () => {
-  console.log('Shutting down gracefully...');
-  db.close((err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log('Database connection closed.');
-    process.exit(0);
-  });
-});
+// Start server
+(async () => {
+  try {
+    // Initialize database schemas
+    await initializeDatabase();
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Backend server running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔐 Default admin: admin@example.com / admin123`);
-});
+    // Start listening
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Backend server running on port ${PORT}`);
+      console.log(`📊 Health check: http://localhost:${PORT}/health`);
+      console.log(`💾 Database: JustCopy DB (persistent)`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+})();

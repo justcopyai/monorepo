@@ -1,5 +1,5 @@
 const express = require('express');
-const { JustCopyDB } = require('@justcopy/database');
+const { JustCopyDB } = require('./lib/justcopy-db');
 const cors = require('cors');
 
 const app = express();

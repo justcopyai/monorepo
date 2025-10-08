@@ -28,15 +28,15 @@ class JustCopyDB {
   constructor(config = {}) {
     this.apiUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api/customer-backend';
     this.apiKey = config.apiKey || process.env.JUSTCOPY_API_KEY;
-    this.projectId = config.projectId || process.env.PROJECT_ID;
+    this.applicationId = config.applicationId || process.env.APPLICATION_ID;
 
     // Validate required configuration
     if (!this.apiKey) {
       console.warn('⚠️  JUSTCOPY_API_KEY not set. Database operations will fail.');
     }
 
-    if (!this.projectId) {
-      console.warn('⚠️  PROJECT_ID not set. Database operations may fail.');
+    if (!this.applicationId) {
+      console.warn('⚠️  APPLICATION_ID not set. Database operations may fail.');
     }
 
     // Initialize auth client

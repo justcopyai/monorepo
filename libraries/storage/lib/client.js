@@ -100,7 +100,7 @@ class JustCopyStorage {
     formData.append('tags', tags.join(','));
     formData.append('metadata', JSON.stringify(metadata));
 
-    const response = await this._request('POST', '/customer-filesystem/upload', formData, {
+    const response = await this._request('POST', '/upload', formData, {
       'X-Project-API-Key': this.apiKey,
     });
 
@@ -113,7 +113,7 @@ class JustCopyStorage {
    * @returns {Promise<string>} Presigned download URL
    */
   async getUrl(fileId) {
-    const response = await this._request('GET', `/customer-filesystem/files/${fileId}`);
+    const response = await this._request('GET', `/files/${fileId}`);
     return response.file.downloadUrl;
   }
 
@@ -123,7 +123,7 @@ class JustCopyStorage {
    * @returns {Promise<Object>} File metadata with download URL
    */
   async get(fileId) {
-    const response = await this._request('GET', `/customer-filesystem/files/${fileId}`);
+    const response = await this._request('GET', `/files/${fileId}`);
     return response.file;
   }
 
@@ -149,7 +149,7 @@ class JustCopyStorage {
     if (limit) queryParams.append('limit', String(limit));
     if (cursor) queryParams.append('cursor', cursor);
 
-    const response = await this._request('GET', `/customer-filesystem/files?${queryParams.toString()}`);
+    const response = await this._request('GET', `/files?${queryParams.toString()}`);
     return {
       files: response.files,
       pagination: response.pagination,
@@ -171,7 +171,7 @@ class JustCopyStorage {
     queryParams.append('userId', userId);
     if (hard) queryParams.append('hard', 'true');
 
-    await this._request('DELETE', `/customer-filesystem/files/${fileId}?${queryParams.toString()}`);
+    await this._request('DELETE', `/files/${fileId}?${queryParams.toString()}`);
   }
 
   /**
@@ -179,7 +179,7 @@ class JustCopyStorage {
    * @returns {Promise<Object>} Quota information
    */
   async getQuota() {
-    const response = await this._request('GET', '/customer-filesystem/quota');
+    const response = await this._request('GET', '/quota');
     return response.quota;
   }
 

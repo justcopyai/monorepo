@@ -384,6 +384,17 @@ app.get('/api/files', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/api/files/quota', authenticateToken, async (req, res) => {
+  try {
+    const quota = await storage.getQuota();
+
+    res.json({ quota });
+  } catch (error) {
+    console.error('Get quota error:', error);
+    res.status(500).json({ error: 'Failed to get quota' });
+  }
+});
+
 app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
   try {
     const file = await storage.get(req.params.fileId);
@@ -428,17 +439,6 @@ app.delete('/api/files/:fileId', authenticateToken, async (req, res) => {
     }
 
     res.status(500).json({ error: 'Failed to delete file' });
-  }
-});
-
-app.get('/api/files/quota', authenticateToken, async (req, res) => {
-  try {
-    const quota = await storage.getQuota();
-
-    res.json({ quota });
-  } catch (error) {
-    console.error('Get quota error:', error);
-    res.status(500).json({ error: 'Failed to get quota' });
   }
 });
 

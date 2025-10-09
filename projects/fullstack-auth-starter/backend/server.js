@@ -1,12 +1,25 @@
 const express = require('express');
 const { JustCopyDB } = require('./lib/justcopy-db');
+const { JustCopyAuth } = require('./lib/justcopy-auth');
+const { JustCopyStorage } = require('./lib/justcopy-storage');
+const multer = require('multer');
 const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Initialize JustCopy DB (auto-configured from environment variables)
+// Initialize JustCopy clients (auto-configured from environment variables)
 const db = new JustCopyDB();
+const auth = new JustCopyAuth();
+const storage = new JustCopyStorage();
+
+// Configure multer for file uploads (memory storage)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB max file size
+  },
+});
 
 // Middleware
 app.use(cors());
@@ -49,7 +62,7 @@ const authenticateToken = async (req, res, next) => {
   }
 
   try {
-    const user = await db.auth.verify(token);
+    const user = await auth.verify(token);
     if (!user) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
@@ -85,7 +98,7 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Email, password, and name are required' });
     }
 
-    const result = await db.auth.register({ email, password, name });
+    const result = await auth.register({ email, password, name });
 
     res.status(201).json({
       message: 'User created successfully',
@@ -111,7 +124,7 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const result = await db.auth.login({ email, password });
+    const result = await auth.login({ email, password });
 
     res.json({
       message: 'Login successful',
@@ -140,7 +153,7 @@ app.post('/api/auth/logout', authenticateToken, async (req, res) => {
   const token = authHeader && authHeader.split(' ')[1];
 
   try {
-    await db.auth.logout(token);
+    await auth.logout(token);
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('Logout error:', error);
@@ -292,6 +305,140 @@ app.post('/api/projects', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Create project error:', error);
     res.status(500).json({ error: 'Database error' });
+  }
+});
+
+// ============================================
+// FILE UPLOAD ROUTES (NEW - using @justcopy/storage)
+// ============================================
+
+app.post('/api/files/upload', authenticateToken, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file provided' });
+    }
+
+    const folder = req.body.folder || 'uploads';
+    const isPublic = req.body.isPublic === 'true';
+    const tags = req.body.tags ? req.body.tags.split(',') : [];
+
+    console.log(`📤 Uploading file: ${req.file.originalname} (${req.file.size} bytes)`);
+
+    const file = await storage.upload(req.file.buffer, {
+      fileName: req.file.originalname,
+      userId: req.user.userId,
+      folder,
+      isPublic,
+      tags,
+      metadata: {
+        uploadedBy: req.user.email,
+        uploadedAt: new Date().toISOString(),
+      },
+    });
+
+    res.status(201).json({
+      message: 'File uploaded successfully',
+      file: {
+        id: file.id,
+        name: file.name,
+        size: file.size,
+        mimeType: file.mimeType,
+        folder: file.folder,
+        tags: file.tags,
+      },
+    });
+  } catch (error) {
+    console.error('File upload error:', error);
+
+    if (error.message.includes('quota exceeded')) {
+      return res.status(413).json({ error: 'Storage quota exceeded' });
+    }
+
+    if (error.message.includes('not allowed')) {
+      return res.status(400).json({ error: 'File type not allowed' });
+    }
+
+    res.status(500).json({ error: 'Failed to upload file' });
+  }
+});
+
+app.get('/api/files', authenticateToken, async (req, res) => {
+  try {
+    const { folder, mimeType, tags, limit } = req.query;
+
+    const { files, pagination } = await storage.list({
+      userId: req.user.userId,
+      folder: folder || undefined,
+      mimeType: mimeType || undefined,
+      tags: tags ? tags.split(',') : undefined,
+      limit: limit ? parseInt(limit) : 20,
+    });
+
+    res.json({
+      files,
+      pagination,
+    });
+  } catch (error) {
+    console.error('List files error:', error);
+    res.status(500).json({ error: 'Failed to list files' });
+  }
+});
+
+app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
+  try {
+    const file = await storage.get(req.params.fileId);
+
+    res.json({
+      file: {
+        id: file.id,
+        name: file.name,
+        size: file.size,
+        mimeType: file.mimeType,
+        folder: file.folder,
+        downloadUrl: file.downloadUrl,
+        expiresAt: file.expiresAt,
+        createdAt: file.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error('Get file error:', error);
+
+    if (error.message === 'File not found') {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    res.status(500).json({ error: 'Failed to get file' });
+  }
+});
+
+app.delete('/api/files/:fileId', authenticateToken, async (req, res) => {
+  try {
+    await storage.delete(req.params.fileId, req.user.userId);
+
+    res.json({ message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Delete file error:', error);
+
+    if (error.message === 'File not found') {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    if (error.message.includes('Unauthorized')) {
+      return res.status(403).json({ error: 'Unauthorized to delete this file' });
+    }
+
+    res.status(500).json({ error: 'Failed to delete file' });
+  }
+});
+
+app.get('/api/files/quota', authenticateToken, async (req, res) => {
+  try {
+    const quota = await storage.getQuota();
+
+    res.json({ quota });
+  } catch (error) {
+    console.error('Get quota error:', error);
+    res.status(500).json({ error: 'Failed to get quota' });
   }
 });
 

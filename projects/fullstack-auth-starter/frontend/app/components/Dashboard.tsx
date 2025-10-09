@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { LogOut, Plus, Folder, Clock, User, Sparkles, Code } from 'lucide-react'
+import { LogOut, Plus, Folder, Clock, User, Sparkles, Code, Upload } from 'lucide-react'
 import api from '../lib/api'
 
 interface DashboardProps {
@@ -11,6 +12,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ user, setUser }: DashboardProps) {
+  const router = useRouter()
   const [projects, setProjects] = useState([])
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [newProject, setNewProject] = useState({ title: '', description: '' })
@@ -87,13 +89,22 @@ export default function Dashboard({ user, setUser }: DashboardProps) {
                 </p>
               </div>
             </div>
-            <button
-              onClick={logout}
-              className="flex items-center space-x-2 px-4 py-2 bg-white/[0.05] border border-white/[0.1] rounded-2xl text-white hover:bg-white/[0.08] transition-all"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Logout</span>
-            </button>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => router.push('/files')}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#00ff88]/10 to-[#00cc6a]/10 border border-[#00ff88]/30 rounded-2xl text-white hover:bg-[#00ff88]/20 transition-all"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Files</span>
+              </button>
+              <button
+                onClick={logout}
+                className="flex items-center space-x-2 px-4 py-2 bg-white/[0.05] border border-white/[0.1] rounded-2xl text-white hover:bg-white/[0.08] transition-all"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         </div>
       </motion.header>

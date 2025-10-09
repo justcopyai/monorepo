@@ -1,0 +1,25 @@
+{
+  "name": "@justcopy/storage",
+  "version": "1.0.0",
+  "description": "Storage client for JustCopy published applications - persistent file storage with zero configuration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "justcopy",
+    "storage",
+    "file-upload",
+    "s3",
+    "cloud-storage"
+  ],
+  "author": "JustCopy.ai",
+  "license": "MIT",
+  "dependencies": {
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

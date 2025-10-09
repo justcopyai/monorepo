@@ -13,17 +13,15 @@
  *   }
  * });
  *
- * // Auth
- * const { user, token } = await db.auth.register({
- *   email: 'user@example.com',
- *   password: 'password123',
- *   name: 'John Doe'
- * });
- *
- * // Database
+ * // Database operations
  * const items = await db.table('items')
  *   .where('userId', user.userId)
  *   .get();
+ *
+ * // For authentication, use @justcopy/auth package
+ * const { JustCopyAuth } = require('@justcopy/auth');
+ * const auth = new JustCopyAuth();
+ * const { user, token } = await auth.register({ email, password, name });
  */
 
 const JustCopyDB = require('./lib/client');

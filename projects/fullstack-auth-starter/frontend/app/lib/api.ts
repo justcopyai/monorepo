@@ -164,6 +164,69 @@ export const api = {
       return api.request('/api/auth/me');
     },
   },
+
+  /**
+   * File storage endpoints
+   */
+  files: {
+    async upload(file: File, options: { folder?: string; tags?: string[]; isPublic?: boolean } = {}) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', options.folder || 'uploads');
+      formData.append('isPublic', String(options.isPublic || false));
+      if (options.tags && options.tags.length > 0) {
+        formData.append('tags', options.tags.join(','));
+      }
+
+      const token = api.getToken();
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${BACKEND_URL}/api/files/upload`, {
+        method: 'POST',
+        headers,
+        body: formData,
+      });
+
+      if (response.status === 401) {
+        api.removeToken();
+        throw new Error('Authentication required');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Upload failed: ${response.status}`);
+      }
+
+      return response.json();
+    },
+
+    async list(options: { folder?: string; mimeType?: string; limit?: number } = {}) {
+      const params = new URLSearchParams();
+      if (options.folder) params.append('folder', options.folder);
+      if (options.mimeType) params.append('mimeType', options.mimeType);
+      if (options.limit) params.append('limit', String(options.limit));
+
+      const query = params.toString();
+      return api.request(`/api/files${query ? '?' + query : ''}`);
+    },
+
+    async get(fileId: string) {
+      return api.request(`/api/files/${fileId}`);
+    },
+
+    async delete(fileId: string) {
+      return api.request(`/api/files/${fileId}`, {
+        method: 'DELETE',
+      });
+    },
+
+    async getQuota() {
+      return api.request('/api/files/quota');
+    },
+  },
 };
 
 export default api;

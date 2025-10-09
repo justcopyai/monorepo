@@ -1,0 +1,28 @@
+{
+  "name": "@justcopy/auth",
+  "version": "1.0.0",
+  "description": "Authentication client for JustCopy published applications - user registration, login, and session management",
+  "main": "index.js",
+  "keywords": [
+    "justcopy",
+    "auth",
+    "authentication",
+    "jwt",
+    "login",
+    "register",
+    "session"
+  ],
+  "author": "JustCopy.ai",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justcopyai/monorepo.git",
+    "directory": "libraries/auth"
+  }
+}

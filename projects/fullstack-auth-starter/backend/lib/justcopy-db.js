@@ -1,34 +1,109 @@
-const TableQuery = require('./table-query');
-
 /**
  * JustCopyDB - Database client for JustCopy published applications
- *
- * Usage:
- *   const { JustCopyDB } = require('@justcopy/database');
- *   const db = new JustCopyDB(); // Auto-configured from env vars
- *
- *   // Define tables
- *   await db.defineTable('users', { indexes: { email: 'unique', status: 'filter' } });
- *
- *   // Database operations
- *   const items = await db.table('items').where('userId', userId).get();
- *
- * Note: For authentication, use @justcopy/auth package separately
+ * Provides persistent data storage with zero configuration.
  */
+
+class TableQuery {
+  constructor(db, tableName) {
+    this.db = db;
+    this.tableName = tableName;
+    this.conditions = {};
+    this.filterConditions = {};
+    this.limitValue = 100;
+  }
+
+  where(field, value) {
+    this.conditions[field] = value;
+    return this;
+  }
+
+  filter(field, value) {
+    this.filterConditions[field] = value;
+    return this;
+  }
+
+  limit(count) {
+    this.limitValue = count;
+    return this;
+  }
+
+  async get() {
+    const indexField = Object.keys(this.conditions)[0];
+    const indexValue = this.conditions[indexField];
+
+    return this.db._request('POST', '/db/query', {
+      tableName: this.tableName,
+      index: indexField,
+      value: indexValue,
+      filter: Object.keys(this.filterConditions).length > 0 ? this.filterConditions : undefined,
+      limit: this.limitValue
+    });
+  }
+
+  async first() {
+    const results = await this.limit(1).get();
+    return results[0] || null;
+  }
+
+  async find(id) {
+    try {
+      return await this.db._request('GET', `/db/${this.tableName}/${id}`);
+    } catch (error) {
+      if (error.message.includes('not found')) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  async insert(data) {
+    const userId = data.userId;
+    if (!userId) {
+      throw new Error('userId is required for insert operations');
+    }
+
+    return this.db._request('POST', '/db/create', {
+      tableName: this.tableName,
+      userId,
+      data
+    });
+  }
+
+  async update(userId, data) {
+    const recordId = this.conditions.id;
+    if (!recordId) {
+      throw new Error('Record ID required for update (use .where("id", recordId))');
+    }
+
+    return this.db._request('PUT', `/db/${this.tableName}/${recordId}`, {
+      userId,
+      data
+    });
+  }
+
+  async delete(userId) {
+    const recordId = this.conditions.id;
+    if (!recordId) {
+      throw new Error('Record ID required for delete (use .where("id", recordId))');
+    }
+
+    return this.db._request('DELETE', `/db/${this.tableName}/${recordId}`, {
+      userId
+    });
+  }
+
+  async count() {
+    const results = await this.get();
+    return results.length;
+  }
+}
+
 class JustCopyDB {
-  /**
-   * Create a new database client
-   * @param {Object} config - Optional configuration
-   * @param {string} config.apiUrl - API base URL (defaults to env var)
-   * @param {string} config.apiKey - Project API key (defaults to env var)
-   * @param {string} config.applicationId - Application ID (defaults to env var)
-   */
   constructor(config = {}) {
     this.apiUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api/customer-backend';
     this.apiKey = config.apiKey || process.env.JUSTCOPY_API_KEY;
     this.applicationId = config.applicationId || process.env.APPLICATION_ID;
 
-    // Validate required configuration
     if (!this.apiKey) {
       console.warn('⚠️  JUSTCOPY_API_KEY not set. Database operations will fail.');
     }
@@ -40,17 +115,8 @@ class JustCopyDB {
     console.log('✅ JustCopyDB initialized');
   }
 
-  /**
-   * Define a table schema with indexes
-   * @param {string} name - Table name
-   * @param {Object} schema - Schema configuration
-   * @param {Object} schema.indexes - Index definitions (e.g., { email: 'unique', status: 'filter' })
-   * @returns {Promise<Object>}
-   */
   async defineTable(name, schema = {}) {
     const indexes = {};
-
-    // Map simple string values to index slots
     const indexFields = Object.keys(schema.indexes || {});
     if (indexFields.length > 0) {
       indexes.idx1 = indexFields[0];
@@ -58,7 +124,6 @@ class JustCopyDB {
     if (indexFields.length > 1) {
       indexes.idx2 = indexFields[1];
     }
-    // idx3 is always 'createdAt' (handled by backend)
 
     const response = await this._request('POST', '/db/define-schema', {
       tableName: name,
@@ -69,22 +134,12 @@ class JustCopyDB {
     return response;
   }
 
-  /**
-   * Get table query builder
-   * @param {string} name - Table name
-   * @returns {TableQuery}
-   */
   table(name) {
     return new TableQuery(this, name);
   }
 
-  /**
-   * Internal request handler
-   * @private
-   */
   async _request(method, path, data) {
-    // Use node-fetch for Node.js environments
-    const fetch = globalThis.fetch || require('node-fetch');
+    const fetch = require('node-fetch');
 
     const url = `${this.apiUrl}${path}`;
     const headers = {
@@ -92,10 +147,7 @@ class JustCopyDB {
       'X-Project-API-Key': this.apiKey
     };
 
-    const options = {
-      method,
-      headers
-    };
+    const options = { method, headers };
 
     if (data && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
       options.body = JSON.stringify(data);
@@ -115,7 +167,6 @@ class JustCopyDB {
         throw new Error(errorMessage);
       }
 
-      // Handle empty responses (like DELETE)
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
@@ -128,13 +179,8 @@ class JustCopyDB {
     }
   }
 
-  /**
-   * Test database connection
-   * @returns {Promise<boolean>}
-   */
   async testConnection() {
     try {
-      // Try to get schema for a test table
       await this._request('GET', '/db/schema/users');
       return true;
     } catch (error) {
@@ -144,4 +190,4 @@ class JustCopyDB {
   }
 }
 
-module.exports = JustCopyDB;
+module.exports = { JustCopyDB };

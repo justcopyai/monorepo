@@ -100,7 +100,9 @@ class TableQuery {
 
 class JustCopyDB {
   constructor(config = {}) {
-    this.apiUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api/customer-backend';
+    // Use base URL and append service path
+    const baseUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api';
+    this.apiUrl = `${baseUrl}/customer-backend`;
     this.apiKey = config.apiKey || process.env.JUSTCOPY_API_KEY;
     this.applicationId = config.applicationId || process.env.APPLICATION_ID;
 
@@ -112,7 +114,7 @@ class JustCopyDB {
       console.warn('⚠️  APPLICATION_ID not set. Database operations may fail.');
     }
 
-    console.log('✅ JustCopyDB initialized');
+    console.log('✅ JustCopyDB initialized with API:', this.apiUrl);
   }
 
   async defineTable(name, schema = {}) {

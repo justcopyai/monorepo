@@ -5,7 +5,9 @@
 
 class JustCopyAuth {
   constructor(config = {}) {
-    this.apiUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api/customer-backend';
+    // Use base URL and append service path
+    const baseUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api';
+    this.apiUrl = `${baseUrl}/customer-backend`;
     this.apiKey = config.apiKey || process.env.JUSTCOPY_API_KEY;
     this.applicationId = config.applicationId || process.env.APPLICATION_ID;
 
@@ -13,7 +15,7 @@ class JustCopyAuth {
       console.warn('⚠️  JUSTCOPY_API_KEY not set. Auth operations will fail.');
     }
 
-    console.log('✅ JustCopyAuth initialized');
+    console.log('✅ JustCopyAuth initialized with API:', this.apiUrl);
   }
 
   async register({ email, password, name }) {

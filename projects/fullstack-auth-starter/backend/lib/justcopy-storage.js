@@ -6,7 +6,9 @@
  */
 class JustCopyStorage {
   constructor(config = {}) {
-    this.apiUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api';
+    // Use base URL and append service path
+    const baseUrl = config.apiUrl || process.env.JUSTCOPY_API_URL || 'https://api.justcopy.ai/api';
+    this.apiUrl = `${baseUrl}/customer-filesystem`;
     this.apiKey = config.apiKey || process.env.JUSTCOPY_API_KEY;
     this.applicationId = config.applicationId || process.env.APPLICATION_ID;
 
@@ -14,7 +16,7 @@ class JustCopyStorage {
       console.warn('⚠️  JUSTCOPY_API_KEY not set. Storage operations will fail.');
     }
 
-    console.log('✅ JustCopyStorage initialized');
+    console.log('✅ JustCopyStorage initialized with API:', this.apiUrl);
   }
 
   /**

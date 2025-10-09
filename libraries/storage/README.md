@@ -168,9 +168,9 @@ const quota = await storage.getQuota();
 **Returns:**
 ```javascript
 {
-  totalStorage: 5368709120,      // 5 GB
+  totalStorage: 2147483648,      // 2 GB
   usedStorage: 1073741824,       // 1 GB
-  availableStorage: 4294967296,  // 4 GB
+  availableStorage: 1073741824,  // 4 GB
   fileCount: 42,
   maxFileSize: 104857600,        // 100 MB
   allowedMimeTypes: ['image/*', 'application/pdf', 'video/*'],
@@ -384,7 +384,7 @@ const storage = new JustCopyStorage({
 
 **Default Quotas (Per Application):**
 - **Max file size:** 100 MB per file
-- **Total storage:** 5 GB
+- **Total storage:** 2 GB
 - **Allowed MIME types:** `image/*`, `video/*`, `application/pdf`, `text/*`, `application/json`
 - **Max files per user:** 100
 

@@ -1,0 +1,27 @@
+{
+  "name": "next-node-cdk-lambda-ddb",
+  "version": "1.0.0",
+  "description": "Next.js + AWS CDK + Lambda + DynamoDB serverless starter - Built with JustCopy.ai",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../infrastructure && npm install",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "build:infrastructure": "cd infrastructure && npm run build",
+    "deploy": "cd infrastructure && npm run deploy",
+    "destroy": "cd infrastructure && cdk destroy"
+  },
+  "keywords": [
+    "nextjs",
+    "aws",
+    "cdk",
+    "lambda",
+    "dynamodb",
+    "serverless",
+    "typescript",
+    "justcopy.ai"
+  ],
+  "author": "JustCopy.ai",
+  "license": "SEE LICENSE IN LICENSE"
+}

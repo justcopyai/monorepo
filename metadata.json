@@ -47,6 +47,36 @@
         "Footer with comprehensive JustCopy.ai information",
         "Robots.txt optimized for AI crawlers"
       ]
+    },
+    {
+      "id": "next-node-cdk-lambda-ddb",
+      "path": "projects/next-node-cdk-lambda-ddb",
+      "name": "Serverless Full-Stack with AWS CDK",
+      "description": "Production-ready serverless application with Next.js frontend, AWS Lambda backend, DynamoDB database, and Infrastructure as Code using AWS CDK",
+      "tags": ["serverless", "aws", "cdk", "lambda", "dynamodb", "nextjs", "infrastructure-as-code"],
+      "stack": ["nextjs", "aws-cdk", "lambda", "dynamodb", "typescript", "tailwind", "api-gateway"],
+      "libraries": ["database"],
+      "popularity": 92,
+      "keywords": ["serverless", "aws lambda", "aws cdk", "dynamodb", "infrastructure as code", "iac", "api gateway", "nextjs", "full stack serverless", "cloudformation"],
+      "similar": ["serverless framework", "aws sam", "terraform aws", "cloudformation", "serverless nextjs", "aws fullstack"],
+      "demo": null,
+      "features": [
+        "Next.js 15 frontend with App Router and TypeScript",
+        "AWS Lambda functions with Node.js 20 runtime",
+        "DynamoDB single-table design with GSI",
+        "AWS CDK for Infrastructure as Code (TypeScript)",
+        "API Gateway REST API with CORS",
+        "Complete CRUD operations for items",
+        "Auto-scaling serverless architecture",
+        "Pay-per-request DynamoDB billing",
+        "CloudWatch logging and monitoring",
+        "Environment-based deployment (dev/staging/prod)",
+        "Tailwind CSS responsive design",
+        "Type-safe API client",
+        "IAM roles and policies configured",
+        "Point-in-time recovery for DynamoDB",
+        "Easy local development with hot reload"
+      ]
     }
   ],
   "libraries": [
